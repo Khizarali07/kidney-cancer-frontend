@@ -58,6 +58,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signup = async (email, password) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/v1/auth/signup",
+        { email, password },
+        { withCredentials: true }
+      );
+
+      const { token } = response.data;
+      if (token) {
+        setUser(response.data.data.user);
+        toast.success("Logged in successfully!");
+        return { success: true };
+      }
+      return { success: false, error: "No token received" };
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  };
+
   const logout = async () => {
     try {
       await axios.get("http://localhost:5000/api/v1/auth/logout", {
@@ -77,6 +101,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         isLoading,
+        signup,
         login,
         logout,
         isAuthenticated: !!user,

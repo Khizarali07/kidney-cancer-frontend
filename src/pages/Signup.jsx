@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { authAPI } from "../services/api";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ const Signup = () => {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { signup, isAuthenticated, loading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -47,22 +48,29 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      const { success, error } = await signup({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        passwordConfirm: formData.passwordConfirm,
-      });
+      const res = await authAPI.signup(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.passwordConfirm
+      );
 
-      if (success) {
-        toast.success("Account created successfully!");
+      console.log("res", res);
+
+      if (res?.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      if (res?.data?.message) {
+        toast.success(res.data.message);
         // AuthContext will handle the navigation
-      } else {
-        toast.error(error || "Signup failed. Please try again.");
       }
     } catch (err) {
       console.error("Signup error:", err);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(
+        err.message || "An unexpected error occurred. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }

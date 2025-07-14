@@ -52,9 +52,14 @@ export const authAPI = {
     }
   },
 
-  signup: async (userData) => {
+  signup: async (name, email, password, passwordConfirm) => {
     try {
-      const response = await api.post("/auth/signup", userData);
+      const response = await api.post("/auth/signup", {
+        name,
+        email,
+        password,
+        passwordConfirm,
+      });
       return { data: response.data, error: null };
     } catch (error) {
       return {

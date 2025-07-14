@@ -4,26 +4,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import UploadTabContent from "../components/dashboard/UploadTabContent"; // Import the new component
+import PatientDataEntry from "../components/kidney_predictor";
 
 // Icons
 // UploadIcon has been moved to UploadTabContent.jsx
-
-const HistoryIcon = ({ className = "" }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={`h-6 w-6 ${className}`}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-);
 
 // Prediction Result Component
 const PredictionResult = ({ prediction }) => {
@@ -150,47 +134,6 @@ const Dashboard = () => {
     }
   };
 
-  // const handleUpload = async () => {
-  //   if (!selectedFile) return;
-  //   setIsUploading(true);
-  //   const formData = new FormData();
-  //   formData.append("image", selectedFile); // API expects the file under the key "image"
-
-  //   try {
-  //     const response = await api.uploadImage(selectedFile);
-
-  //     if (response.status !== "success") {
-  //       let errorMessage = `Upload failed. Status: ${response.status}`;
-  //       try {
-  //         const errorData = await response.json();
-  //         errorMessage = errorData.message || errorMessage;
-  //       } catch (e) {
-  //         // Ignore if response is not JSON or other parsing error
-  //       }
-  //       throw new Error(errorMessage);
-  //     }
-
-  //     const result = await response.json();
-  //     // Displaying the prediction from the API response
-  //     // Adjust `result.prediction` based on the actual API response structure
-  //     toast.success(
-  //       `Scan uploaded successfully! Prediction: ${JSON.stringify(
-  //         result.prediction || result
-  //       )}`
-  //     );
-  //     setSelectedFile(null);
-  //     const fileInput = document.getElementById("file-upload");
-  //     if (fileInput) fileInput.value = "";
-  //     // Optionally, you might want to re-fetch the scan history here
-  //     // fetchRecentScans();
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //     toast.error(error.message || "Upload failed. Please try again.");
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
-
   const handleUpload = async () => {
     if (!selectedFile) return;
     setIsUploading(true);
@@ -228,16 +171,6 @@ const Dashboard = () => {
       setIsUploading(false);
     }
   };
-  const handleLogout = async () => {
-    try {
-      await logout();
-      toast.success("Successfully logged out");
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Failed to log out");
-    }
-  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -256,64 +189,8 @@ const Dashboard = () => {
       case "history":
         return (
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Scan History</h2>
-            {isLoading ? (
-              <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Date
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Status
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Result
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {recentScans.map((scan) => (
-                      <tr key={scan.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {scan.date}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            {scan.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              scan.result === "Normal"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {scan.result}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            <h2 className="text-xl font-semibold mb-4"> Patient Data Entry</h2>
+            <PatientDataEntry />
           </div>
         );
       case "overview":
@@ -355,41 +232,6 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Recent Activity
-              </h3>
-              {isLoading ? (
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {recentScans.slice(0, 3).map((scan) => (
-                    <div
-                      key={scan.id}
-                      className="flex items-center justify-between border-b pb-3"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          Scan #{scan.id}
-                        </p>
-                        <p className="text-sm text-gray-500">{scan.date}</p>
-                      </div>
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          scan.result === "Normal"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {scan.result}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
         );
     }
@@ -426,7 +268,7 @@ const Dashboard = () => {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Upload Scan
+              Upload Image
             </button>
             <button
               onClick={() => setActiveTab("history")}
@@ -436,7 +278,7 @@ const Dashboard = () => {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Scan History
+              Patient Data Entry
             </button>
           </nav>
         </div>
