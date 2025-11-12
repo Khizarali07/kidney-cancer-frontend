@@ -43,7 +43,10 @@ const PatientDataEntry = ({ fetchRecentScans }) => {
     const data = new FormData();
     data.append("file", file);
     try {
-      const res = await axios.post("http://localhost:8001/train", data);
+      const res = await axios.post(
+        `${process.env.REACT_APP_FLASK_API_URL}/train`,
+        data
+      );
       console.log(res);
 
       setTrainingStatus(res.data.message);
@@ -64,10 +67,13 @@ const PatientDataEntry = ({ fetchRecentScans }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8001/predict", formData);
+      const res = await axios.post(
+        `${process.env.REACT_APP_FLASK_API_URL}/predict`,
+        formData
+      );
       setPredictionResult(res.data);
       const save = await axios.post(
-        "http://localhost:5000/api/v1/detection/save-prediction",
+        `${process.env.REACT_APP_API_BASE_URL}/detection/save-prediction`,
         { formData, ...res.data },
         {
           withCredentials: true,

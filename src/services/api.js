@@ -103,7 +103,7 @@ api.uploadImage = async (file) => {
     formData.append("image", file);
 
     const response = await axios.post(
-      "http://localhost:5000/api/v1/detection",
+      `${process.env.REACT_APP_API_BASE_URL}/api/v1/detection`,
       formData,
       {
         withCredentials: true, // Required for cookies

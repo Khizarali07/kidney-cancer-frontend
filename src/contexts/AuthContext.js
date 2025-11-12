@@ -13,9 +13,12 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const checkAuth = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/auth/me", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/auth/me`,
+        {
+          withCredentials: true,
+        }
+      );
       console.log(response.data);
       setUser(response.data.data.user);
 
@@ -37,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
+        `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
         { email, password },
         { withCredentials: true }
       );
@@ -61,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/signup",
+        `${process.env.REACT_APP_API_BASE_URL}/auth/signup`,
         { email, password },
         { withCredentials: true }
       );
@@ -84,7 +87,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.get("http://localhost:5000/api/v1/auth/logout", {
+      await axios.get(`${process.env.REACT_APP_API_BASE_URL}/auth/logout`, {
         withCredentials: true,
       });
     } catch (error) {
