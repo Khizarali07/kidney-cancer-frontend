@@ -14,6 +14,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -55,6 +56,7 @@ const Signup = () => {
       );
 
       if (res?.error) {
+        setError(res.error);
         toast.error(res.error);
         return;
       }
@@ -63,6 +65,7 @@ const Signup = () => {
         toast.success(res.data.message);
         // AuthContext will handle the navigation
       } else {
+        setError("Signup failed. Please try again.");
         toast.error(error || "Signup failed. Please try again.");
       }
     } catch (err) {
