@@ -106,20 +106,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logoutUser = async () => {
-    try {
-      await axios.get(`${process.env.REACT_APP_API_BASE_URL}/auth/logout`, {
-        withCredentials: true,
-      });
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      setUser(null);
-      Cookies.remove("auth_token");
-      // navigate("/login");
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
