@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       Cookies.remove("auth_token");
-      navigate("/login");
+      // navigate("/login");
     }
   };
 

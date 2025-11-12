@@ -27,13 +27,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle 401 Unauthorized errors (token expired/invalid)
-    if (error.response?.status === 401) {
-      // Redirect to login page on unauthorized
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
-    }
+    // No longer automatically redirecting here.
+    // The component or context that made the request should handle the error.
     return Promise.reject(error);
   }
 );
