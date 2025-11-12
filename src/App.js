@@ -36,10 +36,10 @@ const ProtectedRoute = ({ children }) => {
     return <LoadingSpinner />;
   }
 
-  // if (!isAuthenticated) {
-  //   // Redirect to login page, but save the current location they were trying to go to
-  //   return <Navigate to="/login" state={{ from: location }} replace />;
-  // }
+  if (!isAuthenticated) {
+    // Redirect to login page, but save the current location they were trying to go to
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   return children;
 };
