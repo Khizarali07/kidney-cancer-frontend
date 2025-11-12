@@ -220,11 +220,11 @@ const Signup = () => {
                 className="ml-2 block text-sm text-gray-900"
               >
                 I agree to the{" "}
-                <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                <a href="/" className="text-indigo-600 hover:text-indigo-500">
                   Terms
                 </a>{" "}
                 and{" "}
-                <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                <a href="/" className="text-indigo-600 hover:text-indigo-500">
                   Privacy Policy
                 </a>
               </label>
@@ -284,7 +284,7 @@ const Signup = () => {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <div>
                 <a
-                  href="#"
+                  href="/"
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign up with Google</span>
@@ -301,7 +301,7 @@ const Signup = () => {
 
               <div>
                 <a
-                  href="#"
+                  href="/"
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign up with GitHub</span>
