@@ -42,10 +42,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const { success, data, error } = await login(
-        formData.email,
-        formData.password
-      );
+      const { success, error } = await login(formData.email, formData.password);
 
       if (success) {
         toast.success("Logged in successfully!");

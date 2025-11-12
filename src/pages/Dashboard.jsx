@@ -75,7 +75,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [recentScans, setRecentScans] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [prediction, setPrediction] = useState(null);
@@ -94,11 +94,11 @@ const Dashboard = () => {
       api.getDetections().then((res) => {
         setRecentScans(res?.data?.data?.detections);
       });
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error) {
       console.error("Error fetching scans:", error);
       toast.error("Failed to load scan history");
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 

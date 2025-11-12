@@ -11,7 +11,6 @@ const Signup = () => {
     password: "",
     passwordConfirm: "",
   });
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
