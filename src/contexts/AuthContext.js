@@ -1,6 +1,12 @@
 // frontend/src/contexts/AuthContext.js
-import { createContext, useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+// import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -10,8 +16,23 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  const checkAuth = async () => {
+  // const navigate = useNavigate();
+
+  const logout = useCallback(async () => {
+    try {
+      await axios.get(`${process.env.REACT_APP_API_BASE_URL}/auth/logout`, {
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      Cookies.remove("auth_token");
+      // navigate("/login");
+    }
+  }, []);
+
+  const checkAuth = useCallback(async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/auth/me`,
@@ -30,12 +51,12 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [logout]);
 
   // Check if user is logged in on initial load
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   const login = async (email, password) => {
     try {
@@ -85,7 +106,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
+  const logoutUser = async () => {
     try {
       await axios.get(`${process.env.REACT_APP_API_BASE_URL}/auth/logout`, {
         withCredentials: true,
