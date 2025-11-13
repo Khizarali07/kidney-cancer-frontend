@@ -93,7 +93,33 @@ export const authAPI = {
     }
   },
 
-  // uploadImage was here, moved to be a direct method of the api object
+  updateProfile: async (name, email) => {
+    try {
+      const response = await api.patch("/auth/updateMe", { name, email });
+      return { data: response.data, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: error.response?.data?.message || "Update profile failed",
+      };
+    }
+  },
+
+  updatePassword: async (passwordCurrent, password, passwordConfirm) => {
+    try {
+      const response = await api.post("/auth/updateMyPassword", {
+        passwordCurrent,
+        password,
+        passwordConfirm,
+      });
+      return { data: response.data, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: error.response?.data?.message || "Update password failed",
+      };
+    }
+  },
 }; // End of authAPI
 
 // Add uploadImage directly to the api (axios instance) object
@@ -103,7 +129,7 @@ api.uploadImage = async (file) => {
     formData.append("image", file);
 
     const response = await axios.post(
-      `${process.env.REACT_APP_API_BASE_URL}/api/v1/detection`,
+      `${process.env.REACT_APP_API_BASE_URL}/detection`,
       formData,
       {
         withCredentials: true, // Required for cookies

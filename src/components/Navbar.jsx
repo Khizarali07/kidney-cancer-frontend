@@ -124,13 +124,6 @@ const Navbar = () => {
                     aria-orientation="vertical"
                     aria-labelledby="user-menu"
                   >
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      role="menuitem"
-                    >
-                      Your Profile
-                    </Link>
                     <button
                       onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -183,12 +176,6 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="mt-3 space-y-1">
-                <Link
-                  to="/profile"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                >
-                  Your Profile
-                </Link>
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
