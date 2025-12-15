@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
+import Button from "./Button";
+import LoadingSpinner from "./LoadingSpinner";
 
 const FIELD_LABELS = {
   age: "Age (years)",
@@ -29,17 +31,27 @@ const FIELD_LABELS = {
 };
 
 const PatientDataEntry = ({ fetchRecentScans }) => {
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState(
     Object.keys(FIELD_LABELS).reduce((o, k) => ({ ...o, [k]: "" }), {})
   );
   const [trainingStatus, setTrainingStatus] = useState("");
+  const [trainingLoading, setTrainingLoading] = useState(false);
   const [formFieldsLoaded, setFormFieldsLoaded] = useState(false);
+  const [serverColumns, setServerColumns] = useState(null);
+  const [uploadedFileName, setUploadedFileName] = useState("");
   const [predictionResult, setPredictionResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleTrainUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
+
+    setUploadedFileName(file.name);
+    setTrainingLoading(true);
+    setTrainingStatus("Training dataset... This may take a moment.");
+    setServerColumns(null);
+
     const data = new FormData();
     data.append("file", file);
     try {
@@ -53,11 +65,18 @@ const PatientDataEntry = ({ fetchRecentScans }) => {
       setFormFieldsLoaded(true);
 
       if (Array.isArray(res.data?.columns) && res.data.columns.length > 0) {
-        alert("Server columns: " + res.data.columns.join(", "));
+        setServerColumns(res.data.columns);
       }
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Training failed: " + (err.response?.data.error || err.message));
+      setTrainingStatus(
+        "Training failed: " + (err.response?.data?.error || err.message)
+      );
+      setFormFieldsLoaded(false);
+    } finally {
+      setTrainingLoading(false);
+      // allow uploading the same file again
+      if (e?.target) e.target.value = "";
     }
   };
 
@@ -95,16 +114,81 @@ const PatientDataEntry = ({ fetchRecentScans }) => {
   const inputStyle = "border p-2 rounded w-full";
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 bg-white shadow p-8 rounded-xl">
-      <h1 className="text-3xl font-bold text-center mb-6">
+    <div className="max-w-5xl mx-auto mt-6 sm:mt-10 bg-white shadow p-4 sm:p-8 rounded-xl">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
         Kidney Disease Trainer & Predictor
       </h1>
 
-      <div className="mb-8 text-center">
-        <input type="file" accept=".csv" onChange={handleTrainUpload} />
-        {trainingStatus && (
-          <p className="mt-2 text-green-600">{trainingStatus}</p>
-        )}
+      <div className="mb-8">
+        <div className="border border-gray-200 rounded-lg p-4 sm:p-6 bg-gray-50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                Upload Dataset (CSV)
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Upload your kidney disease dataset to train the model.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv"
+                onChange={handleTrainUpload}
+                className="hidden"
+                disabled={trainingLoading}
+              />
+              <Button
+                variant="primary"
+                onClick={() => fileInputRef.current?.click()}
+                loading={trainingLoading}
+                disabled={trainingLoading}
+              >
+                {trainingLoading ? "Training" : "Upload Dataset"}
+              </Button>
+            </div>
+          </div>
+
+          {(uploadedFileName || trainingStatus) && (
+            <div className="mt-4">
+              {uploadedFileName && (
+                <p className="text-sm text-gray-700">
+                  <span className="font-medium">Selected:</span> {uploadedFileName}
+                </p>
+              )}
+
+              {trainingLoading && (
+                <div className="mt-3 flex items-center gap-3 rounded-md border border-indigo-200 bg-white p-3">
+                  <LoadingSpinner size="sm" />
+                  <div className="text-sm text-gray-700">
+                    <div className="font-medium">Training in progress</div>
+                    <div className="text-gray-600">Please wait…</div>
+                  </div>
+                </div>
+              )}
+
+              {!trainingLoading && trainingStatus && (
+                <p
+                  className={`mt-2 text-sm ${
+                    trainingStatus.toLowerCase().includes("failed")
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {trainingStatus}
+                </p>
+              )}
+
+              {!trainingLoading && Array.isArray(serverColumns) && (
+                <p className="mt-2 text-xs text-gray-600">
+                  Columns detected: {serverColumns.length}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {formFieldsLoaded && (
