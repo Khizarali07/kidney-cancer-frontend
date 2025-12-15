@@ -155,7 +155,8 @@ const PatientDataEntry = ({ fetchRecentScans }) => {
             <div className="mt-4">
               {uploadedFileName && (
                 <p className="text-sm text-gray-700">
-                  <span className="font-medium">Selected:</span> {uploadedFileName}
+                  <span className="font-medium">Selected:</span>{" "}
+                  {uploadedFileName}
                 </p>
               )}
 
