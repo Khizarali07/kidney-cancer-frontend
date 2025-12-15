@@ -49,9 +49,12 @@ const PatientDataEntry = ({ fetchRecentScans }) => {
       );
       console.log(res);
 
-      setTrainingStatus(res.data.message);
+      setTrainingStatus(res.data?.message || "Model trained successfully");
       setFormFieldsLoaded(true);
-      alert("Server columns: " + res.data.columns.join(", "));
+
+      if (Array.isArray(res.data?.columns) && res.data.columns.length > 0) {
+        alert("Server columns: " + res.data.columns.join(", "));
+      }
     } catch (err) {
       console.error(err.response?.data || err.message);
       alert("Training failed: " + (err.response?.data.error || err.message));
